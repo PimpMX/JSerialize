@@ -13,10 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\JSerialize">
+      <UniqueIdentifier>{34851cfe-de95-4175-8a12-de4e4b01a450}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\JSerialize">
+      <UniqueIdentifier>{58bd95cf-8616-403b-b4cf-09a9cfc79d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\JSerialize\Dependencies">
+      <UniqueIdentifier>{0b861e42-abdb-4965-bc62-57745f54be7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="JSerialize.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="JSerialize\JSerialize.cpp">
+      <Filter>Quelldateien\JSerialize</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="JSerialize\JSerialize.hpp">
+      <Filter>Headerdateien\JSerialize</Filter>
+    </ClInclude>
+    <ClInclude Include="JSerialize\Dependencies\json.hpp">
+      <Filter>Headerdateien\JSerialize\Dependencies</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
