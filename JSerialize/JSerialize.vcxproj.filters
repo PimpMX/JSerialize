@@ -38,5 +38,11 @@
     <ClInclude Include="JSerialize\Dependencies\json.hpp">
       <Filter>Headerdateien\JSerialize\Dependencies</Filter>
     </ClInclude>
+    <ClInclude Include="Example.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="JSerialize\Types.hpp">
+      <Filter>Headerdateien\JSerialize</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
