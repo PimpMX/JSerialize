@@ -1,5 +1,6 @@
 #pragma once
 
+#include <typeinfo>
 #include <variant>
 #include <string>
 
@@ -32,8 +33,9 @@ namespace JSerialize
 
 	public:
 
-		void Initialize(T DefaultValue, size_t Size, std::string VarName)
+		void Initialize(bool IsLeaf, T DefaultValue, size_t Size, std::string VarName)
 		{
+			m_bLeaf = IsLeaf;
 			m_nSize = Size;
 			m_VarName = VarName;
 			m_pData = new std::variant<POSSIBLE_TYPES>();
@@ -42,25 +44,27 @@ namespace JSerialize
 		
 		CSerializeable()
 		{
+			m_bLeaf = true;
 			m_nSize = 0;
 			m_VarName = "undefined";
 			m_pData = nullptr;
 		}
 
-		CSerializeable(T DefaultValue, size_t Size, std::string szVarName)
+		CSerializeable(bool IsLeaf, T DefaultValue, size_t Size, std::string VarName)
 		{
-			Initialize(DefaultValue, Size, szVarName);
+			Initialize(IsLeaf, DefaultValue, Size, VarName);
 		}
 
 		CSerializeable(const CSerializeable& Serializeable)
 		{
-			Initialize(std::get<T>(*Serializeable.m_pData), Serializeable.m_nSize, Serializeable.m_VarName);
+			Initialize(Serializeable.m_bLeaf, std::get<T>(*Serializeable.m_pData), Serializeable.m_nSize, Serializeable.m_VarName);
 		}
 
 		CSerializeable& operator=(const CSerializeable& Serializeable)
 		{
 			if(this != &Serializeable)
 			{
+				m_bLeaf = Serializeable.m_bLeaf;
 				m_nSize = Serializeable.m_nSize;
 				m_VarName = Serializeable.m_VarName;
 				*m_pData = *Serializeable.m_pData;
@@ -107,14 +111,25 @@ namespace JSerialize
 
 		//	Object attribute access.
 
-		std::string GetName()
+		bool IsLeaf()
 		{
-			return m_VarName;
+			/*
+			*	m_bLeaf == false indicates that the underlying type of the CSerializeable<T> consists of one or more CSerializeable<T> objects
+			*	which means the current object can't be serialized by our visitor. m_bLeaf == true means that the underlying type doesn't consist
+			*	of any more CSerializeable<T> objects and can be serialized.
+			*/
+
+			return m_bLeaf;
 		}
 
 		size_t GetSize()
 		{
 			return m_nSize;
+		}
+		
+		std::string GetName()
+		{
+			return m_VarName;
 		}
 
 		std::variant<POSSIBLE_TYPES>& GetVariant()
@@ -124,6 +139,7 @@ namespace JSerialize
 
 	private:
 
+		bool m_bLeaf;
 		size_t m_nSize;
 		std::string m_VarName;
 		std::variant<POSSIBLE_TYPES>* m_pData;
@@ -146,6 +162,11 @@ namespace JSerialize
 			m_pFile = pFile;
 		}
 
+		void SetKeyName(std::string KeyName)
+		{
+			m_KeyName = KeyName;
+		}
+
 		void operator()(bool& Bool);
 		void operator()(unsigned char& UCharacter);
 		void operator()(char& Character);
@@ -163,6 +184,12 @@ namespace JSerialize
 		std::string m_KeyName;
 		nlohmann::json* m_pFile;
 	};
+
+	void Serialize(nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable);
+	void Deserialize(const nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable);
+
+	void AppendToFile(nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable);
+	void GetFromFile(const nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable);
 }
 
 /*
@@ -171,9 +198,5 @@ namespace JSerialize
 *		it has allocated when it's destructor is called.
 */
 
-#define SERIALIZEABLE(DataType, ValueName, InitValue) JSerialize::CSerializeable<DataType> ValueName = JSerialize::CSerializeable<DataType>(InitValue, sizeof(DataType), #ValueName)
-
-
-
-
+#define SERIALIZEABLE(DataType, ValueName, InitValue, IsLeaf) JSerialize::CSerializeable<DataType> ValueName = JSerialize::CSerializeable<DataType>(IsLeaf, InitValue, sizeof(DataType), #ValueName)
 

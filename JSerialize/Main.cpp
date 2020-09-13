@@ -9,10 +9,8 @@
 
 int main()
 {
-	Example::Struct MyStruct;
 	nlohmann::json MyFile;
-	JSerialize::CPrimitiveVisitor MyVisitor(MyStruct.m_Float.GetName(), &MyFile);
+	SERIALIZEABLE(Example::Struct, MyStr, Example::Struct(), false);
 
-	std::visit(MyVisitor, MyStruct.m_Float.GetVariant());
-	std::cout << MyFile.dump(2) << std::endl;
+	JSerialize::Serialize(MyFile, (JSerialize::CSerializeable<UNKNOWN>*)(&MyStr));
 }

@@ -55,3 +55,32 @@ void JSerialize::CPrimitiveVisitor::operator()(double& Double)
 	(*m_pFile)[m_KeyName] = Double;
 }
 
+std::vector<std::string> KeyDepthStack;
+
+void JSerialize::Serialize(nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable)
+{
+	if (!pSerializeable->IsLeaf())
+	{
+		for (uint32_t Index = 0; Index < pSerializeable->GetSize() / sizeof(CSerializeable<UNKNOWN>); Index++)
+		{
+			KeyDepthStack.push_back(pSerializeable->GetName());
+			JSerialize::Serialize(File, (CSerializeable<UNKNOWN>*)(pSerializeable->GetAdress()) + Index);
+			KeyDepthStack.erase(KeyDepthStack.end() - 1);
+		}
+	}
+	else JSerialize::AppendToFile(File, pSerializeable);
+}
+
+void JSerialize::Deserialize(const nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable)
+{
+}
+
+void JSerialize::AppendToFile(nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable)
+{
+	printf("%s\n", "Appended!");
+}
+
+void JSerialize::GetFromFile(const nlohmann::json& File, CSerializeable<UNKNOWN>* pSerializeable)
+{
+
+}

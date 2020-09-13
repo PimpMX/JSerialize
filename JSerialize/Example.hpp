@@ -6,11 +6,10 @@ namespace Example
 {
 	struct Struct
 	{
-		SERIALIZEABLE(int, m_Integer, 0);
-		SERIALIZEABLE(float, m_Float, 0.0f);
-		SERIALIZEABLE(double, m_Double, 0.0f);
-		SERIALIZEABLE(void*, m_pVoid, 0);
-		SERIALIZEABLE(float, m_Float2, 1.0f);
+		SERIALIZEABLE(int, m_Integer, 0, true);
+		SERIALIZEABLE(float, m_Float, 0.0f, true);
+		SERIALIZEABLE(double, m_Double, 0.0f, true);
+		SERIALIZEABLE(void*, m_pVoid, 0, true);
 	};
 }
 
